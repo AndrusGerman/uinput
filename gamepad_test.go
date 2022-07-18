@@ -1,80 +1,68 @@
-package uinput_test
+package uinput
 
 import (
 	"testing"
 	"time"
-	"uinput"
 )
 
-// This event infinitely inputs the konami code to debug using evtest.
-func TestInfiniteKonami(t *testing.T) {
-	vg, err := uinput.CreateGamepad("/dev/uinput", []byte("Hot gophers in your area"), 0xDEAD, 0xBEEF)
+// This event inputs the konami keys to debug using evtest.
+func TestGamepadKonamiKeys(t *testing.T) {
+	vg, err := CreateGamepad("/dev/uinput", []byte("Hot gophers in your area"), 0xDEAD, 0xBEEF)
 	if err != nil {
 		t.Fatalf("Failed to create the virtual gamepad. Last error was: %s\n", err)
 	}
+	var keys = []int{
+		ButtonDpadUp,
+		ButtonDpadDown,
+		ButtonDpadLeft,
+		ButtonDpadRight,
+		ButtonSouth,
+		ButtonEast,
+	}
 
-	for i := 0; i < 10; i++ {
-		for j := 0; j < 3; j++ {
-			err = vg.ButtonPress(uinput.ButtonDpadUp)
-			if err != nil {
-				t.Fatalf("Failed to send button press. Last error was: %s\n", err)
-			}
-			sleepForaBit()
-
-			err = vg.ButtonPress(uinput.ButtonDpadDown)
-			if err != nil {
-				t.Fatalf("Failed to send button press. Last error was: %s\n", err)
-			}
-			sleepForaBit()
-		}
-
-		for j := 0; j < 3; j++ {
-			err = vg.ButtonPress(uinput.ButtonDpadLeft)
-			if err != nil {
-				t.Fatalf("Failed to send button press. Last error was: %s\n", err)
-			}
-			sleepForaBit()
-
-			err = vg.ButtonPress(uinput.ButtonDpadRight)
-			if err != nil {
-				t.Fatalf("Failed to send button press. Last error was: %s\n", err)
-			}
-			sleepForaBit()
-		}
-
-		err = vg.ButtonPress(uinput.ButtonSouth)
+	for i := range keys {
+		err = vg.ButtonPress(keys[i])
 		if err != nil {
 			t.Fatalf("Failed to send button press. Last error was: %s\n", err)
 		}
 		sleepForaBit()
+	}
 
-		err = vg.ButtonPress(uinput.ButtonEast)
+}
+
+func TestGamepadtRightKeys(t *testing.T) {
+	vg, err := CreateGamepad("/dev/uinput", []byte("Hot gophers in your area"), 0xDEAD, 0xBEEF)
+	if err != nil {
+		t.Fatalf("Failed to create the virtual gamepad. Last error was: %s\n", err)
+	}
+	var keys = []int{
+		ButtonSouth,
+		ButtonEast,
+		ButtonNorth,
+		ButtonWest}
+
+	for i := range keys {
+		err = vg.ButtonPress(keys[i])
 		if err != nil {
 			t.Fatalf("Failed to send button press. Last error was: %s\n", err)
 		}
 		sleepForaBit()
-
-		err = vg.ButtonPress(uinput.ButtonStart)
-		if err != nil {
-			t.Fatalf("Failed to send button press. Last error was: %s\n", err)
-		}
 	}
 }
 
-func TestInfiniteUpDown(t *testing.T) {
-	vg, err := uinput.CreateGamepad("/dev/uinput", []byte("Hot gophers in your area"), 0xDEAD, 0xBEEF)
+func TestGamepadtDirectionKeys(t *testing.T) {
+	vg, err := CreateGamepad("/dev/uinput", []byte("Hot gophers in your area"), 0xDEAD, 0xBEEF)
 	if err != nil {
 		t.Fatalf("Failed to create the virtual gamepad. Last error was: %s\n", err)
 	}
+	var keys = []int{
+		ButtonDpadUp,
+		ButtonDpadDown,
+		ButtonDpadLeft,
+		ButtonDpadRight}
 
-	for {
-		err = vg.ButtonPress(uinput.ButtonDpadUp)
-		if err != nil {
-			t.Fatalf("Failed to send button press. Last error was: %s\n", err)
-		}
-		sleepForaBit()
-
-		err = vg.ButtonPress(uinput.ButtonDpadDown)
+	for i := range keys {
+		err = vg.ButtonPress(keys[i])
 		if err != nil {
 			t.Fatalf("Failed to send button press. Last error was: %s\n", err)
 		}
@@ -83,7 +71,7 @@ func TestInfiniteUpDown(t *testing.T) {
 }
 
 func TestAxisMovement(t *testing.T) {
-	vg, err := uinput.CreateGamepad("/dev/uinput", []byte("Hot gophers in your area"), 0xDEAD, 0xBEEF)
+	vg, err := CreateGamepad("/dev/uinput", []byte("Hot gophers in your area"), 0xDEAD, 0xBEEF)
 	if err != nil {
 		t.Fatalf("Failed to create the virtual gamepad. Last error was: %s\n", err)
 	}
