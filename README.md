@@ -197,6 +197,42 @@ func main() {
 }
 ```
 
+### Using the virtual gamepad device:
+
+```go
+package main
+
+import "github.com/bendahl/uinput"
+// alternatively (to use specific version), use this:
+//import "gopkg.in/bendahl/uinput.v1"
+
+func main() {
+	// initialize gamepad and check for possible errors
+	gamepad, err := uinput.CreateGamepad("/dev/uinput", []byte("testgamepad"), 0xDEAD, 0xBEEF)
+	if err != nil {
+		return
+	}
+	// always do this after the initialization in order to guarantee that the device will be properly closed
+	defer gamepad.Close()
+
+
+	// move the left stick to position 0.2, 1.0
+	gamepad.LeftStickMove(0.2, 1.0)
+
+	// move the right stick to position -1, 0.5
+	gamepad.RightStickMove(-1, 0.5)
+
+	// press gamepad buttons
+	gamepad.ButtonDown(uinput.ButtonStart)
+	gamepad.ButtonPress(uinput.ButtonDpadUp)
+	gamepad.ButtonPress(uinput.ButtonDpadDown)
+	gamepad.ButtonPress(uinput.ButtonEast)
+	gamepad.ButtonPress(uinput.ButtonNorth)
+	gamepad.ButtonUp(uinput.ButtonStart)
+
+}
+```
+
 Experimental APIs (*exp* package)
 ---------------------------------
 The *exp* sub package in this repo contains experimental functionality that has not yet been finalized. It may therefore be subject to change. 
