@@ -20,24 +20,34 @@ const (
 
 // input event codes as specified in input-event-codes.h
 const (
-	evSyn     = 0x00
-	evKey     = 0x01
-	evRel     = 0x02
-	evAbs     = 0x03
-	relX      = 0x0
-	relY      = 0x1
-	relHWheel = 0x6
-	relWheel  = 0x8
-	relDial   = 0x7
+	evSyn        = 0x00
+	evKey        = 0x01
+	evRel        = 0x02
+	evAbs        = 0x03
+	relX         = 0x0
+	relY         = 0x1
+	relHWheel    = 0x6
+	relWheel     = 0x8
+	relDial      = 0x7
+	evMsc        = 0x04
+	MscTimestamp = 0x05
 
-	absX     = 0x00
-	absY     = 0x01
-	absZ     = 0x02
-	absRX    = 0x03
-	absRY    = 0x04
-	absRZ    = 0x05
-	absHat0X = 0x10
-	absHat0Y = 0x11
+	absX             = 0x00
+	absY             = 0x01
+	absZ             = 0x02
+	absRX            = 0x03
+	absRY            = 0x04
+	absRZ            = 0x05
+	absHat0X         = 0x10
+	absHat0Y         = 0x11
+	absPressure      = 0x18
+	AbsTiltX         = 0x1a
+	AbsTiltY         = 0x1b
+	AbsMtSlot        = 0x2f
+	AbsMtTrackingId  = 0x39
+	AbsMtTouchMajor  = 0x30
+	AbsMtTouchMinor  = 0x31
+	AbsMtOrientation = 0x34
 
 	synReport        = 0
 	evMouseBtnLeft   = 0x110

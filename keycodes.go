@@ -248,6 +248,19 @@ const (
 	KeyMicmute          = 248 /*Mute/UnmuteTheMicrophone*/
 	keyMax              = 248 // highest key currently defined in this keyboard api
 
+	// DrawingTablet
+	//BTN_0               = 0x100
+	//BTN_1               = 0x140
+	ButtonToolPen       = 0x140
+	ButtonTouch         = 0x14a
+	ButtonStylus        = 0x14b
+	ButtonToolRubber    = 0x141
+	ButtonToolFinger    = 0x145
+	ButtonToolDoubletap = 0x14d
+	ButtonToolTripletap = 0x14e
+	ButtonToolQuadtap   = 0x14f
+	ButtonToolQuinttap  = 0x148
+
 	// Gamepad button events TODO: Consider moving to a separate file?
 	ButtonGamepad = 0x130
 
