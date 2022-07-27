@@ -25,6 +25,10 @@ type DrawingTablet interface {
 	// Sends out a SYN event.
 	syncEvents() error
 
+	Move(x, y float32) error
+
+	Pressure(pressure float32) error
+
 	io.Closer
 }
 
@@ -71,6 +75,52 @@ func (vg vDrawingTablet) ButtonDown(key int) error {
 
 func (vg vDrawingTablet) ButtonUp(key int) error {
 	return sendBtnEvent(vg.deviceFile, []int{key}, btnStateReleased)
+}
+
+func (vg vDrawingTablet) Pressure(Pressure float32) error {
+	err := vg.sendInputEvent(inputEvent{
+		Type:  evAbs,
+		Code:  absPressure,
+		Value: denormalizeInput(Pressure),
+	})
+	if err != nil {
+		return err
+	}
+	return vg.syncEvents()
+}
+
+func (vg vDrawingTablet) Move(x, y float32) error {
+	values := map[uint16]float32{}
+	values[absX] = x
+	values[absY] = y
+	return vg.sendAbsEvent(values)
+}
+
+func (vg vDrawingTablet) sendAbsEvent(values map[uint16]float32) error {
+	for code, value := range values {
+		err := vg.sendInputEvent(inputEvent{
+			Type:  evAbs,
+			Code:  code,
+			Value: denormalizeInput(value),
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return vg.syncEvents()
+}
+
+func (vg vDrawingTablet) sendInputEvent(ev inputEvent) error {
+	buf, err := inputEventToBuffer(ev)
+	if err != nil {
+		return fmt.Errorf("writing abs stick event failed: %v", err)
+	}
+
+	_, err = vg.deviceFile.Write(buf)
+	if err != nil {
+		return fmt.Errorf("failed to write abs stick event to device file: %v", err)
+	}
+	return vg.syncEvents()
 }
 
 func (vg vDrawingTablet) syncEvents() error {
@@ -204,19 +254,18 @@ func createVDrawingTabletDevice(path string, name []byte) (fd *os.File, err erro
 }
 
 func absInfoDrawingTablett() map[uint16]absInfo {
-	const absMaxValue = 0x3f
 	return map[uint16]absInfo{
-		absX:        {Maximum: absMaxValue, Resolution: 12},
-		absY:        {Maximum: absMaxValue, Resolution: 12},
-		absPressure: {Maximum: absMaxValue, Resolution: 12},
+		absX:        {Maximum: MaximumAxisValue, Resolution: 12},
+		absY:        {Maximum: MaximumAxisValue, Resolution: 12},
+		absPressure: {Maximum: MaximumAxisValue, Resolution: 12},
 
 		AbsTiltX: {Minimum: -90, Maximum: 90, Resolution: 12},
 		AbsTiltY: {Minimum: -90, Maximum: 90, Resolution: 12},
 
 		AbsMtSlot:        {Maximum: 4},
 		AbsMtTrackingId:  {Maximum: 4},
-		AbsMtTouchMajor:  {Maximum: absMaxValue, Resolution: 12},
-		AbsMtTouchMinor:  {Maximum: absMaxValue, Resolution: 12},
+		AbsMtTouchMajor:  {Maximum: MaximumAxisValue, Resolution: 12},
+		AbsMtTouchMinor:  {Maximum: MaximumAxisValue, Resolution: 12},
 		AbsMtOrientation: {Maximum: 1},
 	}
 }
